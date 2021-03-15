@@ -12,9 +12,13 @@ namespace ScrutorTests
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.Scan(s => s.FromAssemblyOf<IRepository>()
-                .AddClasses(c => c.AssignableTo<IRepository>())
+                .AddClasses(c => c.AssignableTo<IRepository>().WithoutAttribute<DecoratorAttribute>())
                     .AsImplementedInterfaces()
                     .WithScopedLifetime());
+
+            //services.AddScoped<IProductRepository, ProductRepository>();
+
+            services.TryDecorate<IProductRepository, ProductRepositoryLoggerDecorator>();
 
             return services;
         }
